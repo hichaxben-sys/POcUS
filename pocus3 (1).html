@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POCUS Réanimation</title>
+<style>
+:root{--bg:#0d0f12;--s1:#13161a;--s2:#1a1e24;--bd:#252932;--txt:#e8eaf0;--t2:#8a94a6;--t3:#4a5568;--gr:#66bb6a;--am:#ffa726;--rd:#ef5350;--te:#26c6da;--bl:#4fc3f7;--mo:monospace;--fn:sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fn);background:var(--bg);color:var(--txt);font-size:14px}
+.top{background:var(--s1);border-bottom:1px solid var(--bd);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:99}
+.badge{background:#00695c;color:#fff;font-family:var(--mo);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px}
+.top h1{font-size:15px;font-weight:500}
+.nav{display:flex;background:var(--s2);border-bottom:1px solid var(--bd);overflow-x:auto;position:sticky;top:49px;z-index:98}
+.nb{flex-shrink:0;padding:10px 13px;font-size:11px;color:var(--t2);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:var(--mo);white-space:nowrap}
+.nb.on{color:var(--txt);border-bottom-color:#00695c;font-weight:700}
+.wrap{padding:12px 16px 80px;max-width:900px;margin:0 auto}
+.pg{display:none}
+.sec{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:14px;margin-bottom:12px}
+.st{font-family:var(--mo);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:11px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:10px;color:var(--t3);font-family:var(--mo);text-transform:uppercase;letter-spacing:.06em}
+.fg input,.fg select{background:var(--s2);border:1px solid var(--bd);border-radius:5px;color:var(--txt);font-family:var(--mo);font-size:12px;padding:6px 8px;outline:none;width:100%}
+.fg input:focus,.fg select:focus{border-color:var(--te)}
+.fg select option{background:var(--s2)}
+.fg input:disabled{opacity:.4}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd)}
+.chk:last-child{border-bottom:none}
+.chk input[type=checkbox]{width:16px;height:16px;flex-shrink:0;margin-top:2px;cursor:pointer;accent-color:var(--te)}
+.cl{font-size:13px}
+.cs{font-size:11px;color:var(--t2);font-family:var(--mo)}
+.prog{height:5px;background:var(--bd);border-radius:3px;margin:8px 0}
+.pf{height:5px;border-radius:3px;transition:width .3s}
+.rb{background:var(--s2);border-radius:7px;padding:10px 12px;margin-bottom:8px}
+.rr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--bd);font-size:12px;gap:8px}
+.rr:last-child{border-bottom:none}
+.rl{color:var(--t2)}
+.ibox{background:rgba(38,198,218,.07);border:1px solid rgba(38,198,218,.25);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:8px}
+.gbox{background:rgba(102,187,106,.08);border:1px solid rgba(102,187,106,.25);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--gr);line-height:1.7;margin-bottom:7px}
+.wbox{background:rgba(255,167,38,.08);border:1px solid rgba(255,167,38,.25);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--am);line-height:1.7;margin-bottom:7px}
+.dbox{background:rgba(239,83,80,.08);border:1px solid rgba(239,83,80,.25);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--rd);line-height:1.7;margin-bottom:7px}
+.ok{background:rgba(102,187,106,.18);color:#66bb6a;font-size:10px;padding:2px 7px;border-radius:3px;font-family:var(--mo);font-weight:700}
+.wa{background:rgba(255,167,38,.18);color:#ffa726;font-size:10px;padding:2px 7px;border-radius:3px;font-family:var(--mo);font-weight:700}
+.da{background:rgba(239,83,80,.18);color:#ef5350;font-size:10px;padding:2px 7px;border-radius:3px;font-family:var(--mo);font-weight:700}
+.in{background:rgba(38,198,218,.15);color:#26c6da;font-size:10px;padding:2px 7px;border-radius:3px;font-family:var(--mo);font-weight:700}
+.sg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.sg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.sbox{background:var(--s2);border-radius:6px;padding:10px;text-align:center}
+.sv{font-family:var(--mo);font-size:20px;font-weight:700;margin-bottom:2px}
+.sl{font-size:10px;color:var(--t2)}
+.ic{background:var(--s2);border-left:3px solid var(--te);border-radius:0 6px 6px 0;padding:9px 12px;margin-bottom:7px;font-size:12px;line-height:1.6}
+.ic.ok{border-color:var(--gr)}
+.ic.wa{border-color:var(--am)}
+.ic.da{border-color:var(--rd)}
+.ic-t{font-family:var(--mo);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:var(--t2)}
+@media(max-width:580px){.g3,.g4{grid-template-columns:1fr 1fr}.sg3{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="badge">POCUS</span>
+  <h1>Point-of-Care Ultrasound</h1>
+</div>
+<div class="nav">
+  <button class="nb" onclick="SP('ett')">ETT</button>
+  <button class="nb" onclick="SP('eto')">ETO</button>
+  <button class="nb" onclick="SP('pulm')">Pulmonaire</button>
+  <button class="nb" onclick="SP('abdo')">Abdominale</button>
+  <button class="nb" onclick="SP('vasc')">Vasculaire</button>
+  <button class="nb" onclick="SP('renal')">Renale</button>
+  <button class="nb" onclick="SP('cerebral')">Cerebrale</button>
+  <button class="nb" onclick="SP('diaphragme')">Diaphragme</button>
+  <button class="nb" onclick="SP('gastrique')">Gastrique</button>
+</div>
+<div class="wrap">
+
+<div class="pg" id="pg-ett">
+<div class="sec">
+<div class="st">Checklist vues ETT</div>
+<div class="chk"><input type="checkbox" onchange="CK('ett',8)"><div><div class="cl">Parasternale grand axe (PLAX)</div><div class="cs">VG, VD, valve mitrale, valve aortique</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('ett',8)"><div><div class="cl">Parasternale petit axe - valve mitrale</div><div class="cs">Feuillets mitraux, signe du Pac-Man</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('ett',8)"><div><div class="cl">Parasternale petit axe - valve aortique</div><div class="cs">Sigmoïdes aortiques, branches coronaires</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('ett',8)"><div><div class="cl">Parasternale petit axe - piliers</div><div class="cs">Contractilite VG, septum, VD</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('ett',8)"><div><div class="cl">Apicale 4 cavites (A4C)</div><div class="cs">VG, VD, OG, OD, Doppler mitrale et tricuspide</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('ett',8)"><div><div class="cl">Apicale 5 cavites (A5C)</div><div class="cs">CCVG, ITV sous-aortique</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('ett',8)"><div><div class="cl">Apicale 2 cavites (A2C)</div><div class="cs">Face inferieure et anterieure VG, OG</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('ett',8)"><div><div class="cl">Sous-costale + VCI</div><div class="cs">Pericarde, 4 cavites, diametre VCI</div></div></div>
+<div class="prog"><div class="pf" id="prog-ett" style="width:0%;background:var(--te)"></div></div>
+<div id="chk-ett"></div>
+</div>
+<div class="sec">
+<div class="st">Fonction systolique VG</div>
+<div class="g4">
+  <div class="fg"><label>FE Simpson (%)</label><input type="number" id="e-fe" placeholder="55-70" oninput="CETT()"></div>
+  <div class="fg"><label>FE visuelle</label><select id="e-fevis" onchange="CETT()"><option value="">-</option><option value="60">Normale</option><option value="45">Legere (40-55%)</option><option value="35">Moderee (30-40%)</option><option value="20">Severe</option></select></div>
+  <div class="fg"><label>ITV CCVG (cm)</label><input type="number" id="e-itv" step="0.1" placeholder="18-25" oninput="CETT()"></div>
+  <div class="fg"><label>CCVG diam (mm)</label><input type="number" id="e-ccvg" placeholder="18-22" oninput="CETT()"></div>
+</div>
+<div class="g4">
+  <div class="fg"><label>MAPSE (mm)</label><input type="number" id="e-mapse" step="0.1" placeholder="10" oninput="CETT()"></div>
+  <div class="fg"><label>S mitral (cm/s)</label><input type="number" id="e-smit" step="0.1" placeholder="5.4" oninput="CETT()"></div>
+  <div class="fg"><label>dP/dt (mmHg/s)</label><input type="number" id="e-dpdt" placeholder="1000" oninput="CETT()"></div>
+  <div class="fg"><label>GLS (%)</label><input type="number" id="e-gls" step="0.1" placeholder="-18" oninput="CETT()"></div>
+</div>
+</div>
+<div class="sec">
+<div class="st">Fonction diastolique</div>
+<div class="g4">
+  <div class="fg"><label>E (cm/s)</label><input type="number" id="e-E" step="0.1" oninput="CETT()"></div>
+  <div class="fg"><label>A (cm/s)</label><input type="number" id="e-A" step="0.1" oninput="CETT()"></div>
+  <div class="fg"><label>e prime septal (cm/s)</label><input type="number" id="e-ep" step="0.1" placeholder="7" oninput="CETT()"></div>
+  <div class="fg"><label>e prime lateral (cm/s)</label><input type="number" id="e-epl" step="0.1" placeholder="10" oninput="CETT()"></div>
+</div>
+</div>
+<div class="sec">
+<div class="st">Ventricule droit</div>
+<div class="g4">
+  <div class="fg"><label>DTD VD (mm)</label><input type="number" id="e-vd" placeholder="41" oninput="CETT()"></div>
+  <div class="fg"><label>Ratio VD/VG</label><input type="number" id="e-vdvg" step="0.1" placeholder="0.6" oninput="CETT()"></div>
+  <div class="fg"><label>TAPSE (mm)</label><input type="number" id="e-tapse" placeholder="17" oninput="CETT()"></div>
+  <div class="fg"><label>S tricuspide (cm/s)</label><input type="number" id="e-stric" step="0.1" placeholder="9.5" oninput="CETT()"></div>
+</div>
+<div class="g4">
+  <div class="fg"><label>IT Vmax (m/s)</label><input type="number" id="e-it" step="0.1" oninput="CETT()"></div>
+  <div class="fg"><label>Septum aplati</label><select id="e-sep" onchange="CETT()"><option value="non">Non</option><option value="diast">Diastolique</option><option value="syst">Systolodiastolique</option></select></div>
+  <div class="fg"><label>VCI max (mm)</label><input type="number" id="e-vci" placeholder="15-25" oninput="CETT()"></div>
+  <div class="fg"><label>VCI min (mm)</label><input type="number" id="e-vcim" oninput="CETT()"></div>
+</div>
+</div>
+<div class="sec">
+<div class="st">Valves et pericarde</div>
+<div class="g3">
+  <div class="fg"><label>Valve mitrale</label><select id="e-vm" onchange="CETT()"><option value="N">Normale</option><option value="IM">IM</option><option value="RM">RM</option><option value="veg">Vegetation</option></select></div>
+  <div class="fg"><label>Valve aortique</label><select id="e-va" onchange="CETT()"><option value="N">Normale</option><option value="IA">IA</option><option value="RA">RA</option><option value="veg">Vegetation</option></select></div>
+  <div class="fg"><label>Pericarde</label><select id="e-peri" onchange="CETT()"><option value="N">Normal</option><option value="min">Minime</option><option value="mod">Modere</option><option value="imp">Important</option><option value="tamp">Tamponnade</option></select></div>
+</div>
+</div>
+<div id="res-ett"></div>
+</div>
+
+<div class="pg" id="pg-eto">
+<div class="sec">
+<div class="st">Checklist vues ETO</div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">ME 4 cavites (0 deg)</div><div class="cs">VG, VD, OG, OD, valves mitrale et tricuspide</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">ME commissural (60 deg)</div><div class="cs">Feuillets mitraux A1-P1, A3-P3</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">ME grand axe (120-135 deg)</div><div class="cs">CCVG, valve aortique, racine aorte</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">ME bicave (90-110 deg)</div><div class="cs">OD, OG, VCS, septum interauriculaire</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">TG petit axe (0 deg)</div><div class="cs">Contractilite VG segmentaire, piliers</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">TG grand axe (120 deg)</div><div class="cs">CCVG, ITV Doppler aortique</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">Aorte descendante (0 deg)</div><div class="cs">Dissection, atherome</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">Auricule gauche</div><div class="cs">Thrombus, contraste spontane</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">Valve aortique (30-60 deg)</div><div class="cs">Morphologie, vegetations</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('eto',10)"><div><div class="cl">Septum interauriculaire (CIA, FOP)</div><div class="cs">Test bulles</div></div></div>
+<div class="prog"><div class="pf" id="prog-eto" style="width:0%;background:var(--te)"></div></div>
+</div>
+<div class="sec">
+<div class="st">Mesures ETO</div>
+<div class="g3">
+  <div class="fg"><label>ITV CCVG (cm)</label><input type="number" id="eto-itv" step="0.1" oninput="CETO()"></div>
+  <div class="fg"><label>CCVG diam (mm)</label><input type="number" id="eto-ccvg" oninput="CETO()"></div>
+  <div class="fg"><label>FE estimee (%)</label><input type="number" id="eto-fe" oninput="CETO()"></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Aorte ascendante (mm)</label><input type="number" id="eto-ao" oninput="CETO()"></div>
+  <div class="fg"><label>Auricule gauche</label><select id="eto-aur" onchange="CETO()"><option value="libre">Libre</option><option value="contraste">Contraste</option><option value="thrombus">Thrombus</option></select></div>
+  <div class="fg"><label>SIA</label><select id="eto-sia" onchange="CETO()"><option value="intact">Intact</option><option value="fop">FOP</option><option value="cia">CIA</option></select></div>
+</div>
+<div class="g2">
+  <div class="fg"><label>Aorte descendante</label><select id="eto-aod" onchange="CETO()"><option value="N">Normale</option><option value="flap">Flap dissection</option><option value="hematome">Hematome intramural</option></select></div>
+  <div class="fg"><label>Valve mitrale</label><select id="eto-vm" onchange="CETO()"><option value="N">Normale</option><option value="IM">IM</option><option value="veg">Vegetation</option></select></div>
+</div>
+<div id="res-eto"></div>
+</div>
+</div>
+
+<div class="pg" id="pg-pulm">
+<div class="sec">
+<div class="st">Protocole BLUE - Checklist</div>
+<div class="chk"><input type="checkbox" onchange="CK('pulm',8)"><div><div class="cl">Zone anterieure superieure droite</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('pulm',8)"><div><div class="cl">Zone anterieure inferieure droite</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('pulm',8)"><div><div class="cl">Zone posterieure droite (PLAPS)</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('pulm',8)"><div><div class="cl">Zone anterieure superieure gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('pulm',8)"><div><div class="cl">Zone anterieure inferieure gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('pulm',8)"><div><div class="cl">Zone posterieure gauche (PLAPS)</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('pulm',8)"><div><div class="cl">Ligne de jonction</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('pulm',8)"><div><div class="cl">Quantification epanchement pleural</div></div></div>
+<div class="prog"><div class="pf" id="prog-pulm" style="width:0%;background:var(--te)"></div></div>
+</div>
+<div class="sec">
+<div class="st">Pattern pulmonaire</div>
+<div class="g2">
+  <div class="fg"><label>Pattern cote droit</label><select id="p-d" onchange="CPULM()"><option value="">- Choisir -</option><option value="A">Lignes A (normal)</option><option value="B">Lignes B diffuses</option><option value="C">Consolidation</option><option value="ep">Epanchement</option><option value="pn">Pneumothorax</option></select></div>
+  <div class="fg"><label>Pattern cote gauche</label><select id="p-g" onchange="CPULM()"><option value="">- Choisir -</option><option value="A">Lignes A (normal)</option><option value="B">Lignes B diffuses</option><option value="C">Consolidation</option><option value="ep">Epanchement</option><option value="pn">Pneumothorax</option></select></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Glissement pleural D</label><select id="p-gd" onchange="CPULM()"><option value="P">Present</option><option value="A">Absent</option></select></div>
+  <div class="fg"><label>Glissement pleural G</label><select id="p-gg" onchange="CPULM()"><option value="P">Present</option><option value="A">Absent</option></select></div>
+  <div class="fg"><label>Point pulmonaire</label><select id="p-pp" onchange="CPULM()"><option value="non">Absent</option><option value="D">Droit</option><option value="G">Gauche</option><option value="bil">Bilateral</option></select></div>
+</div>
+<div class="g2">
+  <div class="fg"><label>Epanchement D (cm)</label><input type="number" id="p-epd" step="0.1" oninput="CPULM()"></div>
+  <div class="fg"><label>Epanchement G (cm)</label><input type="number" id="p-epg" step="0.1" oninput="CPULM()"></div>
+</div>
+<div id="res-pulm"></div>
+</div>
+<div class="sec">
+<div class="st">LUS Score (Bouhemad)</div>
+<div class="ibox">Score 0-3 par zone : 0=lignes A | 1=lignes B &gt;=3 | 2=lignes B confluentes | 3=consolidation. Max=36. Seuil SDRA : &gt;17.</div>
+<div class="g3">
+  <div class="fg"><label>Ant sup D</label><input type="number" id="l-d1" min="0" max="3" oninput="CLUS()"></div>
+  <div class="fg"><label>Ant inf D</label><input type="number" id="l-d2" min="0" max="3" oninput="CLUS()"></div>
+  <div class="fg"><label>Lat sup D</label><input type="number" id="l-d3" min="0" max="3" oninput="CLUS()"></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Lat inf D</label><input type="number" id="l-d4" min="0" max="3" oninput="CLUS()"></div>
+  <div class="fg"><label>Post sup D</label><input type="number" id="l-d5" min="0" max="3" oninput="CLUS()"></div>
+  <div class="fg"><label>Post inf D</label><input type="number" id="l-d6" min="0" max="3" oninput="CLUS()"></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Ant sup G</label><input type="number" id="l-g1" min="0" max="3" oninput="CLUS()"></div>
+  <div class="fg"><label>Ant inf G</label><input type="number" id="l-g2" min="0" max="3" oninput="CLUS()"></div>
+  <div class="fg"><label>Lat sup G</label><input type="number" id="l-g3" min="0" max="3" oninput="CLUS()"></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Lat inf G</label><input type="number" id="l-g4" min="0" max="3" oninput="CLUS()"></div>
+  <div class="fg"><label>Post sup G</label><input type="number" id="l-g5" min="0" max="3" oninput="CLUS()"></div>
+  <div class="fg"><label>Post inf G</label><input type="number" id="l-g6" min="0" max="3" oninput="CLUS()"></div>
+</div>
+<div id="res-lus"></div>
+</div>
+</div>
+
+<div class="pg" id="pg-abdo">
+<div class="sec">
+<div class="st">Checklist eFAST</div>
+<div class="chk"><input type="checkbox" onchange="CK('abdo',8)"><div><div class="cl">Pericarde sous-costal</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('abdo',8)"><div><div class="cl">QSD - Morrisson</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('abdo',8)"><div><div class="cl">QSG - Koller</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('abdo',8)"><div><div class="cl">Pelvis - Douglas</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('abdo',8)"><div><div class="cl">Pleures D et G</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('abdo',8)"><div><div class="cl">Aorte abdominale</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('abdo',8)"><div><div class="cl">VCI sous-hepatique</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('abdo',8)"><div><div class="cl">Foie et vesicule biliaire</div></div></div>
+<div class="prog"><div class="pf" id="prog-abdo" style="width:0%;background:var(--te)"></div></div>
+</div>
+<div class="sec">
+<div class="st">Resultats eFAST et VCI</div>
+<div class="g2">
+  <div class="fg"><label>Liquide libre</label><select id="a-ll" onchange="CABDO()"><option value="N">Absent</option><option value="min">Minime</option><option value="mod">Modere</option><option value="abd">Abondant</option></select></div>
+  <div class="fg"><label>Localisation</label><select id="a-loc" onchange="CABDO()"><option value="na">N/A</option><option value="mor">Morrisson</option><option value="kol">Koller</option><option value="dou">Douglas</option><option value="mul">Multiple</option></select></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>VCI max (mm)</label><input type="number" id="a-vmax" oninput="CABDO()"></div>
+  <div class="fg"><label>VCI min (mm)</label><input type="number" id="a-vmin" oninput="CABDO()"></div>
+  <div class="fg"><label>Mode ventilatoire</label><select id="a-vent" onchange="CABDO()"><option value="spont">Spontane</option><option value="vm">Ventilation mecanique</option></select></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Aorte diam max (mm)</label><input type="number" id="a-ao" oninput="CABDO()"></div>
+  <div class="fg"><label>Morphologie aorte</label><select id="a-aom" onchange="CABDO()"><option value="N">Normale</option><option value="aaa">AAA</option><option value="dis">Dissection</option></select></div>
+  <div class="fg"><label>Vesicule biliaire</label><select id="a-vb" onchange="CABDO()"><option value="N">Normale</option><option value="lith">Lithiase</option><option value="chol">Cholecystite</option><option value="dvb">Dilatation VBP</option></select></div>
+</div>
+<div id="res-abdo"></div>
+</div>
+<div class="sec">
+<div class="st">VExUS - Venous Excess Score</div>
+<div class="ibox">Score de congestion veineuse. Prerequis : VCI &gt;= 20mm. Si VCI &lt; 20mm : grade 0.</div>
+<div class="g3">
+  <div class="fg"><label>VCI (mm)</label><input type="number" id="vx-vci" oninput="CVEXUS()"></div>
+  <div class="fg"><label>Flux veine hepatique</label><select id="vx-vh" onchange="CVEXUS()"><option value="0">Normal (S dominant)</option><option value="1">Modere (S attenue)</option><option value="2">Severe (S inverse)</option></select></div>
+  <div class="fg"><label>Flux veine porte</label><select id="vx-vp" onchange="CVEXUS()"><option value="0">Normal (continu)</option><option value="1">Modere (pulsatile &lt;30%)</option><option value="2">Severe (pulsatile &gt;=30%)</option></select></div>
+</div>
+<div class="g2">
+  <div class="fg"><label>Flux veine renale</label><select id="vx-vr" onchange="CVEXUS()"><option value="0">Normal (continu)</option><option value="1">Modere (biphasique)</option><option value="2">Severe (discontinu)</option></select></div>
+</div>
+<div id="res-vexus"></div>
+</div>
+</div>
+
+<div class="pg" id="pg-vasc">
+<div class="sec">
+<div class="st">Checklist TVP</div>
+<div class="chk"><input type="checkbox" onchange="CK('vasc',6)"><div><div class="cl">Veine femorale commune droite</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('vasc',6)"><div><div class="cl">Veine femorale superficielle droite</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('vasc',6)"><div><div class="cl">Veine poplitee droite</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('vasc',6)"><div><div class="cl">Veine femorale commune gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('vasc',6)"><div><div class="cl">Veine femorale superficielle gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('vasc',6)"><div><div class="cl">Veine poplitee gauche</div></div></div>
+<div class="prog"><div class="pf" id="prog-vasc" style="width:0%;background:var(--te)"></div></div>
+</div>
+<div class="sec">
+<div class="st">Resultats TVP</div>
+<div class="g2">
+  <div class="fg"><label>Compressibilite droite</label><select id="tv-d" onchange="CVASC()"><option value="ok">Totalement compressible</option><option value="part">Partiellement compressible</option><option value="nc">Non compressible (TVP)</option></select></div>
+  <div class="fg"><label>Compressibilite gauche</label><select id="tv-g" onchange="CVASC()"><option value="ok">Totalement compressible</option><option value="part">Partiellement compressible</option><option value="nc">Non compressible (TVP)</option></select></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Localisation</label><select id="tv-l" onchange="CVASC()"><option value="na">N/A</option><option value="prox">Proximale</option><option value="dist">Distale</option></select></div>
+  <div class="fg"><label>Signal Doppler</label><select id="tv-dop" onchange="CVASC()"><option value="P">Present</option><option value="A">Absent</option></select></div>
+</div>
+<div id="res-vasc"></div>
+</div>
+</div>
+
+<div class="pg" id="pg-renal">
+<div class="sec">
+<div class="st">Checklist echo renale</div>
+<div class="chk"><input type="checkbox" onchange="CK('renal',6)"><div><div class="cl">Rein droit - taille et morphologie</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('renal',6)"><div><div class="cl">Rein gauche - taille et morphologie</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('renal',6)"><div><div class="cl">Dilatation pyelo-calicielle</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('renal',6)"><div><div class="cl">Index de resistivite Doppler</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('renal',6)"><div><div class="cl">Vesicule urinaire</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('renal',6)"><div><div class="cl">Doppler arteriel renal</div></div></div>
+<div class="prog"><div class="pf" id="prog-renal" style="width:0%;background:var(--te)"></div></div>
+</div>
+<div class="sec">
+<div class="st">Mesures renales</div>
+<div class="g4">
+  <div class="fg"><label>Longueur rein D (mm)</label><input type="number" id="r-ld" oninput="CRENAL()"></div>
+  <div class="fg"><label>Longueur rein G (mm)</label><input type="number" id="r-lg" oninput="CRENAL()"></div>
+  <div class="fg"><label>Corticale D (mm)</label><input type="number" id="r-cd" oninput="CRENAL()"></div>
+  <div class="fg"><label>Corticale G (mm)</label><input type="number" id="r-cg" oninput="CRENAL()"></div>
+</div>
+<div class="g4">
+  <div class="fg"><label>Hydronephrose D</label><select id="r-hd" onchange="CRENAL()"><option value="N">Absente</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option></select></div>
+  <div class="fg"><label>Hydronephrose G</label><select id="r-hg" onchange="CRENAL()"><option value="N">Absente</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option></select></div>
+  <div class="fg"><label>RI Doppler D</label><input type="number" id="r-rid" step="0.01" oninput="CRENAL()"></div>
+  <div class="fg"><label>RI Doppler G</label><input type="number" id="r-rig" step="0.01" oninput="CRENAL()"></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Volume vesical (mL)</label><input type="number" id="r-vol" oninput="CRENAL()"></div>
+  <div class="fg"><label>Echogenicite corticale</label><select id="r-eco" onchange="CRENAL()"><option value="N">Normale</option><option value="aug">Augmentee</option><option value="dim">Diminuee</option></select></div>
+</div>
+<div id="res-renal"></div>
+</div>
+</div>
+
+<div class="pg" id="pg-cerebral">
+<div class="sec">
+<div class="st">Checklist ONSD et DTC</div>
+<div class="chk"><input type="checkbox" onchange="CK('cerebral',5)"><div><div class="cl">ONSD oeil droit</div><div class="cs">Sonde lineaire, 3mm en arriere du globe</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('cerebral',5)"><div><div class="cl">ONSD oeil gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('cerebral',5)"><div><div class="cl">DTC ACM droite</div><div class="cs">Fenetre temporale, profondeur 50-65mm</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('cerebral',5)"><div><div class="cl">DTC ACM gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('cerebral',5)"><div><div class="cl">Midline shift</div></div></div>
+<div class="prog"><div class="pf" id="prog-cerebral" style="width:0%;background:var(--te)"></div></div>
+</div>
+<div class="sec">
+<div class="st">ONSD - HTIC</div>
+<div class="ibox">ONSD &gt; 5.7mm : PIC &gt; 20mmHg probable.</div>
+<div class="g4">
+  <div class="fg"><label>ONSD droit (mm)</label><input type="number" id="o-d" step="0.1" oninput="CONSD()"></div>
+  <div class="fg"><label>ONSD gauche (mm)</label><input type="number" id="o-g" step="0.1" oninput="CONSD()"></div>
+  <div class="fg"><label>Moyenne</label><input type="number" id="o-moy" disabled></div>
+  <div class="fg"><label>Asymetrie (mm)</label><input type="number" id="o-asy" disabled></div>
+</div>
+<div id="res-onsd"></div>
+</div>
+<div class="sec">
+<div class="st">Doppler Transcranien</div>
+<div class="g3">
+  <div class="fg"><label>Vs ACM droite (cm/s)</label><input type="number" id="d-vsd" oninput="CDTC()"></div>
+  <div class="fg"><label>Vd ACM droite (cm/s)</label><input type="number" id="d-vdd" oninput="CDTC()"></div>
+  <div class="fg"><label>Vm ACM droite (cm/s)</label><input type="number" id="d-vmd" oninput="CDTC()"></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Vs ACM gauche (cm/s)</label><input type="number" id="d-vsg" oninput="CDTC()"></div>
+  <div class="fg"><label>Vd ACM gauche (cm/s)</label><input type="number" id="d-vdg" oninput="CDTC()"></div>
+  <div class="fg"><label>Vm ACM gauche (cm/s)</label><input type="number" id="d-vmg" oninput="CDTC()"></div>
+</div>
+<div class="g2">
+  <div class="fg"><label>Midline shift (mm)</label><input type="number" id="d-mid" step="0.5" oninput="CDTC()"></div>
+</div>
+<div id="res-dtc"></div>
+</div>
+</div>
+
+<div class="pg" id="pg-diaphragme">
+<div class="sec">
+<div class="st">Checklist echo diaphragmatique</div>
+<div class="chk"><input type="checkbox" onchange="CK('diaphragme',6)"><div><div class="cl">Epaisseur diaphragme droit fin expiration (Tee)</div><div class="cs">Sonde lineaire, zone d apposition, 7e-9e espace intercostal</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('diaphragme',6)"><div><div class="cl">Epaisseur diaphragme droit fin inspiration (Tei)</div><div class="cs">Meme fenetree - calculer Thickening Fraction</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('diaphragme',6)"><div><div class="cl">Excursion diaphragme droit (mode TM)</div><div class="cs">Sonde convexe sous-costale. Normal calme &gt;10mm</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('diaphragme',6)"><div><div class="cl">Epaisseur diaphragme gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('diaphragme',6)"><div><div class="cl">Excursion diaphragme gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('diaphragme',6)"><div><div class="cl">Evaluation effort respiratoire</div><div class="cs">En VS-AI : epaississement actif avant aide mecanique</div></div></div>
+<div class="prog"><div class="pf" id="prog-diaphragme" style="width:0%;background:var(--te)"></div></div>
+</div>
+<div class="sec">
+<div class="st">Mesures et Thickening Fraction</div>
+<div class="ibox">TF = (Tei - Tee) / Tee x 100. TF &gt;30% = normal | 20-30% = limite | &lt;20% = dysfonction (VIDD). Excursion : calme &gt;10mm, profonde &gt;25mm.</div>
+<div class="g4">
+  <div class="fg"><label>Tee droit (mm)</label><input type="number" id="di-tee-d" step="0.1" oninput="CDIAPH()"></div>
+  <div class="fg"><label>Tei droit (mm)</label><input type="number" id="di-tei-d" step="0.1" oninput="CDIAPH()"></div>
+  <div class="fg"><label>Tee gauche (mm)</label><input type="number" id="di-tee-g" step="0.1" oninput="CDIAPH()"></div>
+  <div class="fg"><label>Tei gauche (mm)</label><input type="number" id="di-tei-g" step="0.1" oninput="CDIAPH()"></div>
+</div>
+<div class="g4">
+  <div class="fg"><label>TF droit (%)</label><input type="number" id="di-tf-d" disabled></div>
+  <div class="fg"><label>TF gauche (%)</label><input type="number" id="di-tf-g" disabled></div>
+  <div class="fg"><label>Excursion droite (mm)</label><input type="number" id="di-exc-d" oninput="CDIAPH()"></div>
+  <div class="fg"><label>Excursion gauche (mm)</label><input type="number" id="di-exc-g" oninput="CDIAPH()"></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Mode ventilatoire</label><select id="di-vent" onchange="CDIAPH()"><option value="vm">Ventilation mecanique</option><option value="vsai">VS-AI / Sevrage</option><option value="spont">Ventilation spontanee</option></select></div>
+  <div class="fg"><label>Mouvement paradoxal</label><select id="di-paradox" onchange="CDIAPH()"><option value="non">Non</option><option value="d">Droit</option><option value="g">Gauche</option><option value="bil">Bilateral</option></select></div>
+</div>
+<div id="res-diaph"></div>
+</div>
+</div>
+
+<div class="pg" id="pg-gastrique">
+<div class="sec">
+<div class="st">Checklist echo gastrique</div>
+<div class="chk"><input type="checkbox" onchange="CK('gastrique',6)"><div><div class="cl">Vue antrum en decubitus dorsal (DD)</div><div class="cs">Sonde convexe epigastre, entre aorte et foie gauche</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('gastrique',6)"><div><div class="cl">Vue antrum en decubitus lateral droit (DLD)</div><div class="cs">Plus sensible pour detecter le liquide</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('gastrique',6)"><div><div class="cl">Section transversale antrum - surface CSA</div><div class="cs">Mesurer diametres AP et transverse</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('gastrique',6)"><div><div class="cl">Caracterisation du contenu</div><div class="cs">Vide / liquide clair / liquide epais / solide</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('gastrique',6)"><div><div class="cl">Volume gastrique estime (formule Perlas)</div><div class="cs">V(mL) = 27 + 14.6 x CSA - 1.28 x age</div></div></div>
+<div class="chk"><input type="checkbox" onchange="CK('gastrique',6)"><div><div class="cl">Peristaltisme visible</div></div></div>
+<div class="prog"><div class="pf" id="prog-gastrique" style="width:0%;background:var(--te)"></div></div>
+</div>
+<div class="sec">
+<div class="st">Mesures et risque d inhalation</div>
+<div class="ibox">Seuils : &lt;1.5 mL/kg = faible | 1.5-3 mL/kg = modere | &gt;3 mL/kg = estomac plein (ISR obligatoire)</div>
+<div class="g4">
+  <div class="fg"><label>Diametre AP (cm)</label><input type="number" id="ga-d1" step="0.1" oninput="CGAST()"></div>
+  <div class="fg"><label>Diametre transverse (cm)</label><input type="number" id="ga-d2" step="0.1" oninput="CGAST()"></div>
+  <div class="fg"><label>CSA (cm2)</label><input type="number" id="ga-csa" disabled></div>
+  <div class="fg"><label>Age (ans)</label><input type="number" id="ga-age" oninput="CGAST()"></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Poids (kg)</label><input type="number" id="ga-poids" oninput="CGAST()"></div>
+  <div class="fg"><label>Volume estime (mL)</label><input type="number" id="ga-vol" disabled></div>
+  <div class="fg"><label>Volume/kg (mL/kg)</label><input type="number" id="ga-volkg" disabled></div>
+</div>
+<div class="g3">
+  <div class="fg"><label>Contenu gastrique</label><select id="ga-contenu" onchange="CGAST()"><option value="vide">Vide</option><option value="liq_clair">Liquide clair</option><option value="liq_epais">Liquide epais</option><option value="solide">Solide</option></select></div>
+  <div class="fg"><label>Peristaltisme</label><select id="ga-perist" onchange="CGAST()"><option value="present">Present</option><option value="diminue">Diminue</option><option value="absent">Absent (ileus)</option></select></div>
+  <div class="fg"><label>Contexte</label><select id="ga-ctx" onchange="CGAST()"><option value="intub">Avant intubation</option><option value="ne">Nutrition enterale</option><option value="autres">Autres</option></select></div>
+</div>
+<div id="res-gast"></div>
+</div>
+</div>
+
+</div>
+<script>
+var TABS = ['ett','eto','pulm','abdo','vasc','renal','cerebral','diaphragme','gastrique'];
+var currentTab = 'ett';
+
+function SP(id) {
+  var i, pg, bt;
+  for (i = 0; i < TABS.length; i++) {
+    pg = document.getElementById('pg-' + TABS[i]);
+    if (pg) { pg.style.display = 'none'; }
+    bt = document.querySelectorAll('.nb')[i];
+    if (bt) { bt.classList.remove('on'); }
+  }
+  pg = document.getElementById('pg-' + id);
+  if (pg) { pg.style.display = 'block'; }
+  var idx = TABS.indexOf(id);
+  bt = document.querySelectorAll('.nb')[idx];
+  if (bt) { bt.classList.add('on'); }
+  currentTab = id;
+}
+
+function GE(id) { return document.getElementById(id); }
+function VN(id) { var e = GE(id); if (!e) return null; var v = parseFloat(e.value); return isNaN(v) ? null : v; }
+function VS(id) { var e = GE(id); return e ? e.value : ''; }
+function SET(id, html) { var e = GE(id); if (e) e.innerHTML = html; }
+
+function CK(prefix, total) {
+  var cbs = document.querySelectorAll('#pg-' + prefix + ' input[type=checkbox]');
+  var done = 0;
+  for (var i = 0; i < cbs.length; i++) {
+    if (cbs[i].checked) done++;
+  }
+  var pct = Math.round(done / total * 100);
+  var pf = GE('prog-' + prefix);
+  if (pf) {
+    pf.style.width = pct + '%';
+    pf.style.background = pct === 100 ? 'var(--gr)' : pct >= 50 ? 'var(--am)' : 'var(--te)';
+  }
+}
+
+function BDG(val, okThr, warnThr, higher) {
+  var cls;
+  if (higher) { cls = val >= okThr ? 'ok' : val >= warnThr ? 'wa' : 'da'; }
+  else { cls = val <= okThr ? 'ok' : val <= warnThr ? 'wa' : 'da'; }
+  return '<span class="' + cls + '">' + val + '</span>';
+}
+
+function CETT() {
+  var fe=VN('e-fe'), fevis=VS('e-fevis');
+  if(!fe&&fevis) fe=parseFloat(fevis);
+  var itv=VN('e-itv'), ccvg=VN('e-ccvg');
+  var mapse=VN('e-mapse'), smit=VN('e-smit'), dpdt=VN('e-dpdt'), gls=VN('e-gls');
+  var E=VN('e-E'), A=VN('e-A'), ep=VN('e-ep');
+  var tapse=VN('e-tapse'), stric=VN('e-stric'), vdvg=VN('e-vdvg');
+  var sep=VS('e-sep'), it=VN('e-it');
+  var vci=VN('e-vci'), vcim=VN('e-vcim');
+  var vm=VS('e-vm'), va=VS('e-va'), peri=VS('e-peri');
+  var siv=VN('e-siv')||null, pp=VN('e-pp')||null;
+  var h='';
+
+  // Debit cardiaque
+  if(itv&&ccvg){
+    var Sc=Math.PI*Math.pow(ccvg/20,2);
+    var VS2=Math.round(itv*Sc*10)/10;
+    var DC=Math.round(VS2*70/100*10)/10;
+    var dc_cls=DC>=4.5?'var(--gr)':DC>=3?'var(--am)':'var(--rd)';
+    var itv_cls=itv>=18?'var(--gr)':itv>=14?'var(--am)':'var(--rd)';
+    h+='<div class="sg3">';
+    h+='<div class="sbox"><div class="sv" style="color:'+dc_cls+'">'+DC+'</div><div class="sl">Debit (L/min)</div></div>';
+    h+='<div class="sbox"><div class="sv" style="color:var(--bl)">'+VS2+'</div><div class="sl">Vol systolique (mL)</div></div>';
+    h+='<div class="sbox"><div class="sv" style="color:'+itv_cls+'">'+itv+'</div><div class="sl">ITV CCVG (cm)</div></div></div>';
+    h+='<div class="ic '+(DC>=4.5?'ok':DC>=3?'wa':'da')+'"><div class="ic-t">Debit cardiaque</div>';
+    h+='DC='+DC+' L/min (N: 4.5-6.5) — ';
+    if(DC>=4.5) h+='Normal.';
+    else if(DC>=3) h+='Bas-debit modere. Evaluer cause : dysfonction systolique, hypovolemie, obstruction (EP, tamponnade, pneumothorax). Cible: optimiser precharge, evaluer inotropes si DC<3.5.';
+    else h+='Bas-debit severe (<3 L/min). Choc cardiogenique probable. Dobutamine 5-20 mcg/kg/min. Discuter assistance circulatoire.';
+    if(itv<18) h+='<br>ITV bas ('+itv+' cm < 18) : confirme le bas-debit. Cible ITV post-remplissage: +10% = repondeur.';
+    h+='</div>';
+  }
+
+  // Fonction systolique VG
+  if(fe){
+    var fc=fe>=55?'ok':fe>=40?'wa':'da';
+    h+='<div class="ic '+fc+'"><div class="ic-t">Fonction systolique VG — FE '+fe+'%</div>';
+    if(fe>=55) h+='Normale (>=55%). Pas de dysfonction systolique.';
+    else if(fe>=50) h+='Legerement diminuee (50-54%). Dysfonction borderline. Chercher: cardiopathie hypertensive, valvulopathie, myocardite debutante.';
+    else if(fe>=40) h+='Moderement diminuee (40-49%). Dysfonction systolique moderee. Bilan etiologique: coronaropathie (cinetica segmentaire?), cardiomyopathie dilatee, myocardite. Envisager: dobutamine si hypotension, restriction sodee.';
+    else if(fe>=30) h+='Severement diminuee (30-39%). Dysfonction systolique severe. Risque de bas-debit. Dobutamine 5-15 mcg/kg/min. Eviter surcharge volique. Avis cardiologique urgent.';
+    else h+='Tres severement diminuee (<30%). Choc cardiogenique. Assistance circulatoire a discuter (ECMO-VA si refractaire). Dobutamine max + noradrenaline pour PAM. ETG/ETO urgent.';
+    h+='</div>';
+  }
+
+  // MAPSE + parametres longitudinaux
+  if(mapse||smit||dpdt||gls){
+    var mc=(mapse&&mapse<10)?'da':(mapse&&mapse<12)?'wa':'ok';
+    h+='<div class="ic '+mc+'"><div class="ic-t">Parametres longitudinaux VG</div>';
+    if(mapse){
+      h+='MAPSE: '+BDG(mapse,10,7,true)+' mm ';
+      if(mapse>=10) h+='(normal >=10mm — bonne fonction longitudinale).<br>';
+      else if(mapse>=7) h+='(abaisse 7-9mm — dysfonction longitudinale moderee, souvent avant alteration FE).<br>';
+      else h+='(severe <7mm — dysfonction longitudinale severe, corele FE<35%).<br>';
+    }
+    if(smit){
+      h+="S' mitral: "+BDG(smit,5.4,4,true)+' cm/s ';
+      if(smit>=5.4) h+='(normal >=5.4 cm/s).<br>';
+      else h+='(abaisse — dysfonction longitudinale sous-jacente meme si FE preservee).<br>';
+    }
+    if(dpdt){
+      h+='dP/dt: '+BDG(dpdt,1000,800,true)+' mmHg/s ';
+      if(dpdt>=1000) h+='(normal >=1000).<br>';
+      else if(dpdt>=800) h+='(limite 800-1000 — dysfonction contractile moderee).<br>';
+      else h+='(abaisse <800 — contractilite VG significativement alteree).<br>';
+    }
+    if(gls){
+      h+='GLS: '+BDG(gls,-18,-15,false)+'% ';
+      if(gls<=-18) h+='(normal <=-18% — deformation longitudinale preservee).<br>';
+      else if(gls>=-15) h+='(abaisse -15 a -18% — dysfonction subclinique, FE souvent normale. Cardiotoxicite? Amylose?).<br>';
+      else h+='(tres abaisse >-15% — dysfonction severe, mauvais pronostic).<br>';
+    }
+    h+='</div>';
+  }
+
+  // Hypertrophie VG
+  if(siv&&pp){
+    var hvg=siv>11||pp>11;
+    if(hvg){
+      var rel=siv>13&&pp>13;
+      h+='<div class="ic wa"><div class="ic-t">Hypertrophie VG</div>';
+      h+='SIV='+siv+'mm / PP='+pp+'mm. ';
+      if(rel) h+='HVG concentrique severe (SIV et PP >13mm) — Evoquer: HTA severe, CMH, valvulopathie aortique.';
+      else h+='HVG. Rapport SIV/PP: '+(Math.round(siv/pp*10)/10)+'. ';
+      h+='<br>CMH si rapport SIV/PP >1.3 et gradient CCVG >30 mmHg. HTA si bilaterale et symetrique.';
+      h+='</div>';
+    }
+  }
+
+  // Fonction diastolique
+  if(E&&ep){
+    var eep=Math.round(E/ep*10)/10;
+    var eep_lat=VN('e-epl');
+    var eep_moy=eep_lat?Math.round((eep+E/eep_lat)/2*10)/10:eep;
+    var tde=VN('e-tde'), og=VN('e-og');
+    var dc2=eep<=8?'ok':eep<=13?'wa':'da';
+    h+='<div class="ic '+dc2+'"><div class="ic-t">Fonction diastolique</div>';
+    h+='E/e&#39; septal = '+eep+' ';
+    if(eep<=8) h+='(N<=8 — pressions de remplissage normales, PTDVG probablement normale).';
+    else if(eep<=13) h+='(8-13 — zone indeterminee: croiser avec OG, IT, flux veines pulm).';
+    else h+='(>13 — PTDVG elevee, surcharge de remplissage. Evoquer: IC a FE preservee, surcharge volique, restriction).';
+    if(E&&A){
+      var ea=Math.round(E/A*100)/100;
+      h+='<br>E/A = '+ea+' — ';
+      if(ea<0.8) h+='Trouble de relaxation (grade I): alteration relaxation VG.';
+      else if(ea<=1.5) h+='Pseudonormal ou grade II si E/e&#39; eleve.';
+      else h+='Profil restrictif (grade III si irréversible) — mauvais pronostic.';
+    }
+    if(tde){
+      h+='<br>TDE = '+tde+' ms ';
+      if(tde<160) h+='(court <160ms — profil restrictif, PTDVG elevee).';
+      else if(tde>240) h+='(long >240ms — relaxation lente, grade I).';
+      else h+='(normal 160-240ms).';
+    }
+    if(og&&og>40) h+='<br>OG dilatee ('+og+'mm > 40) — signe de surcharge chronique de pression, fibrillation auriculaire?';
+    h+='</div>';
+  }
+
+  // Ventricule droit
+  if(tapse||stric||vdvg||it){
+    var vdf=(tapse&&tapse<17)||(stric&&stric<9.5)||(vdvg&&vdvg>0.6);
+    h+='<div class="ic '+(vdf?'da':'ok')+'"><div class="ic-t">Ventricule droit</div>';
+    if(tapse){
+      h+='TAPSE: '+BDG(tapse,17,12,true)+' mm ';
+      if(tapse>=17) h+='(normal >=17mm).<br>';
+      else if(tapse>=12) h+='(abaisse 12-16mm — dysfonction VD moderee).<br>';
+      else h+='(severe <12mm — dysfonction VD severe, mortalite augmentee).<br>';
+    }
+    if(stric){
+      h+="S' tricuspide: "+BDG(stric,9.5,7,true)+' cm/s ';
+      if(stric>=9.5) h+='(normal).<br>';
+      else h+='(abaisse — dysfonction longitudinale VD).<br>';
+    }
+    if(vdvg){
+      h+='Ratio VD/VG = '+vdvg+' ';
+      if(vdvg<=0.6) h+='(normal).<br>';
+      else if(vdvg<=0.9) h+='(dilatation VD moderee — surcharge pression: EP? HTAP? BPCO?).<br>';
+      else h+='(dilatation VD severe >0.9 — CPA, EP massive, HTAP severe. Evaluer septum paradoxal).<br>';
+    }
+    if(sep==='diast') h+='Aplatissement septal diastolique — surcharge en pression VD (EP, HTAP).<br>';
+    if(sep==='syst') h+='Aplatissement septal systolodiastolique — surcharge mixte pression+volume VD.<br>';
+    if(it){
+      var paps=Math.round(4*it*it);
+      h+='PAPs = '+paps+' + POD mmHg — ';
+      if(paps<35) h+='Normale. ';
+      else if(paps<50) h+='HTAP moderee (35-50 mmHg). Bilan: EP, BPCO, HVG. ';
+      else h+='HTAP severe (>50 mmHg). Bilan complet HTAP, avis specialise. ';
+    }
+    if(vdf) h+='<br>Dysfonction VD — Causes: EP (echo McConnell?), HTAP, BPCO, IDM droit, post-CEC, SDRA (pression positive).';
+    h+='</div>';
+  }
+
+  // VCI et precharge
+  if(vci){
+    var vi='', vi_cls='ibox';
+    if(vci<15){ vi='VCI effondree (<15mm) — Hypovolemie probable. Remplissage vasculaire.'; vi_cls='wbox'; }
+    else if(vci>21&&(!vcim||((vci-vcim)/vci)<0.3)){ vi='VCI dilatee non collapsible (>21mm, collapsibilite <30%) — POD elevee (>=15mmHg). Surcharge volique, IC droite, HTAP, tamponnade. Prudence au remplissage.'; vi_cls='wbox'; }
+    else if(vcim){
+      var col=Math.round((vci-vcim)/vci*100);
+      if(col>50) vi='Index collapsibilite '+col+'% — Hypovolemie (POD <5mmHg). Repondeur au remplissage probable en VS.';
+      else if(col>30) vi='Index collapsibilite '+col+'% — Zone grise. Evaluer contexte clinique.';
+      else vi='Index collapsibilite '+col+'% (<30%) — Normovolemie ou hypervolemie (POD >=10mmHg).';
+    } else vi='VCI '+vci+'mm — saisir VCI min pour calculer l&#39;index de collapsibilite.';
+    h+='<div class="'+vi_cls+'">VCI: '+vi+'</div>';
+  }
+
+  // Pericarde
+  if(peri==='tamp') h+='<div class="dbox">TAMPONNADE — Compression diastolique cavites droites (collapsus OD/VD), variation respiratoire >25% flux Doppler, VCI dilatee. PERICARDICENTESE EN URGENCE sous echo-guidage.</div>';
+  else if(peri==='imp') h+='<div class="wbox">Epanchement pericardique important (>20mm) — Surveiller signes hemodynamiques de tamponnade (hypotension, tachycardie, turgescence jugulaire). ECG: microvoltage, alternance electrique.</div>';
+  else if(peri==='mod') h+='<div class="ibox">Epanchement modere (10-20mm) — Surveiller. Bilan etiologique: infectieux, neoplasique, auto-immun, urémique.</div>';
+  else if(peri==='min') h+='<div class="ibox">Epanchement minime (<10mm) — Souvent non significatif. Surveiller evolution.</div>';
+
+  // Valves
+  if(vm==='veg'||va==='veg') h+='<div class="dbox">Vegetation suspectee — Endocardite infectieuse. ETO URGENT (sensibilite 90% vs 60% ETT). Hemocultures x3 avant ATB. Score Duke. Avis chirurgical si: IC severe, abces, embolie repetee, germe resistant.</div>';
+  if(vm==='IM') h+='<div class="wbox">Insuffisance mitrale — Evaluer: Vena contracta (severe si >7mm), PISA (ERO severe si >0.4cm2), reflux veines pulm. Causes: prolapsus, rupture cordage, ischemique (pilier), endocardite, dilatation anneau.</div>';
+  if(vm==='RM') h+='<div class="wbox">Stenose mitrale — Surface valvulaire (severe si <1.5cm2), gradient moyen (severe si >10mmHg), PHT (surface=220/PHT). Cause principale: rhumatismale. HTAP associee frequente.</div>';
+  if(va==='RA') h+='<div class="wbox">Retrecissement aortique — Surface (severe si <1cm2 ou <0.6cm2/m2), gradient moyen (severe si >40mmHg), V max (severe si >4m/s). Bilan chirurgical si symptomatique.</div>';
+  if(va==='IA') h+='<div class="wbox">Insuffisance aortique — Vena contracta (severe si >6mm), refoulement diastolique aorte descend, PHT. Etiologies: bicuspide, endocardite, dissection, Marfan.</div>';
+
+  SET('res-ett', h||'<div class="ibox">Saisir des valeurs pour obtenir une interpretation.</div>');
+}
+
+function CETO() {
+  var itv=VN('eto-itv'), ccvg=VN('eto-ccvg'), fe=VN('eto-fe'), ao=VN('eto-ao');
+  var aur=VS('eto-aur'), sia=VS('eto-sia'), aod=VS('eto-ao-d'), vm=VS('eto-vm');
+  var h='';
+  if(itv&&ccvg){
+    var Sc=Math.PI*Math.pow(ccvg/20,2);
+    var DC=Math.round(itv*Sc*70/100*10)/10;
+    h+='<div class="rb"><div class="rr"><span class="rl">Debit cardiaque estime</span><span><span class="'+(DC>=4.5?'ok':DC>=3?'wa':'da')+'">'+DC+' L/min</span> '+(DC<4.5?'— Bas-debit: optimiser precharge, inotropes si DC<3.5':'— Normal')+'</span></div>';
+    h+='<div class="rr"><span class="rl">ITV CCVG</span><span><span class="'+(itv>=18?'ok':itv>=14?'wa':'da')+'">'+itv+' cm</span> (N: 18-25cm) '+(itv<18?'— Bas-debit confirme. PLR delta ITV >10% = repondeur.':'')+'</span></div></div>';
+  }
+  if(fe){
+    h+='<div class="ic '+(fe>=55?'ok':fe>=40?'wa':'da')+'"><div class="ic-t">FE estimee ETO</div>'+fe+'% — '+(fe>=55?'Normale':fe>=40?'Dysfonction moderee — evaluer etiologie':'Dysfonction severe — bas-debit, inotropes, assistance a discuter')+'</div>';
+  }
+  if(ao){
+    h+='<div class="'+(ao>45?'dbox':ao>40?'wbox':'rb')+'"><b>Aorte ascendante: '+ao+' mm</b><br>';
+    if(ao<=40) h+='Normale (<=40mm).';
+    else if(ao<=45) h+='Dilatee (40-45mm) — surveillance annuelle, eviter effort intense, beta-bloquant si Marfan.';
+    else if(ao<=50) h+='Dilatee >45mm — avis chirurgical electif (seuil operation selon contexte).';
+    else h+='Anevrisme >50mm — indication chirurgicale selon contexte. Urgence si croissance rapide ou dissection.';
+    h+='</div>';
+  }
+  if(aur==='thrombus') h+='<div class="dbox">Thrombus auricule gauche confirme — CI ABSOLUE a la cardioversion. Anticoagulation efficace >=3 semaines avant cardioversion. Fondaparinux ou HNF si ACFA et instabilite. Controle ETO avant toute procedure.</div>';
+  else if(aur==='contraste') h+='<div class="wbox">Contraste spontane (smoke) — Stase sanguine, risque thromboembolique eleve. Anticoagulation a discuter. Surveillance rapprochee (peut evoluer vers thrombus).</div>';
+  if(sia!=='intact'){
+    h+='<div class="wbox">Anomalie septum interauriculaire: '+sia.toUpperCase()+'<br>';
+    if(sia==='fop') h+='FOP — Rechercher embolie paradoxale (AVC cryptogene, migraine). Test bulles positif. Fermeture percutanee si AVC recidivant et shunt significatif.';
+    else if(sia==='cia') h+='CIA — Evaluer shunt (Qp/Qs: fermeture si >1.5). Dilatation VD secondaire.';
+    else if(sia==='anv') h+='Anevrisme SIA — Souvent associe a FOP. Risque embolique augmente.';
+    h+='</div>';
+  }
+  if(aod==='flap') h+='<div class="dbox">DISSECTION AORTIQUE — Flap intimal visible. Classification Stanford: type A (aorte ascendante) = CHIRURGIE IMMEDIATE. Type B (descendante) = medical (beta-bloquant, controle PA). Scanner corps entier urgent. Avis chirurgie vasculaire IMMEDIATE.</div>';
+  else if(aod==='hematome') h+='<div class="dbox">Hematome intramural — Variante de dissection sans flap visible. Scanner thoracique urgent. Meme prise en charge que dissection. Risque d&#39;evolution vers dissection vraie.</div>';
+  else if(aod==='atherome') h+='<div class="wbox">Atherome aortique severe — Risque embolique (AVC, embolie peripherique). Anticoagulation a discuter. Source embolique potentielle si plaques mobiles >4mm.</div>';
+  if(vm==='veg') h+='<div class="dbox">Vegetation valve mitrale a l&#39;ETO — Endocardite confirmee (sensibilite ETO 90%). Mesurer taille, mobilite, abces annulaire. Avis chirurgical si: vegetation >10mm mobile, abces, fuite severe, mauvaise reponse ATB.</div>';
+  else if(vm==='IM') h+='<div class="wbox">Insuffisance mitrale (ETO) — Localiser le segment (Carpentier A1-A3/P1-P3). Evaluer mecanisme: prolapsus (excès), restriction (defaut). Planifier reparation vs remplacement. ETO per-operatoire indispensable.</div>';
+  SET('res-eto', h||'<div class="ibox">Saisir des valeurs pour obtenir une interpretation.</div>');
+}
+
+function CPULM() {
+  var pd=VS('p-d'), pg=VS('p-g'), gd=VS('p-gd'), gg=VS('p-gg'), pp=VS('p-pp');
+  var epd=VN('p-epd'), epg=VN('p-epg');
+  var h='';
+  var pnD=(gd==='A'&&pp==='D')||pd==='pn';
+  var pnG=(gg==='A'&&pp==='G')||pg==='pn';
+  var pnBil=pp==='bil';
+
+  if(pnD||pnG||pnBil){
+    h+='<div class="dbox">PNEUMOTHORAX '+(pnBil?'BILATERAL':pnD?'DROIT':'GAUCHE')+(pp!=='non'?' — Point pulmonaire pathognomonique (specificite 100%)':(gd==='A'||gg==='A')?' — Absence de glissement pleural':'')+'. DRAINAGE EN URGENCE.<br>';
+    h+='Technique: drain thoracique 2e espace intercostal ligne medio-claviculaire (Monaldi) ou 4-5e EIC ligne axillaire anterieure (Bülau). Confirmer par RX thorax apres drainage.</div>';
+  }
+
+  // Algorithme BLUE
+  var blue_diag='';
+  if(pd==='A'&&pg==='A') blue_diag='Profil A bilateral — Evoquer: BPCO/asthme exacerbe, EP (profil A + TVP = PLAPS negatif).';
+  else if(pd==='B'&&pg==='B') blue_diag='Profil B bilateral — Syndrome alveolo-interstitiel bilateral: OAP (diagnostic BLUE positif si profil B bilateral + DVG), SDRA, pneumonie bilaterale, fibrose.';
+  else if((pd==='B'||pg==='B')&&(pd!==pg)) blue_diag='Profil B unilateral — Pathologie unilaterale: pneumonie, contusion, atelectasie, epanchement debutant.';
+  else if(pd==='C'||pg==='C') blue_diag='Consolidation — Pneumonie (bronchogramme aerique = specifique), atelectasie (bronchogramme fluide), contusion, infarctus pulmonaire (EP).';
+  else if(pd==='ep'||pg==='ep') blue_diag='Epanchement pleural — Signe de la sinusoide = liquidien. Pas de sinusoide = cloisonne ou echogenique.';
+
+  if(blue_diag) h+='<div class="ic wa"><div class="ic-t">Algorithme BLUE</div>'+blue_diag+'</div>';
+
+  if(pd==='B'&&pg==='B'){
+    h+='<div class="ibox">Differentiel OAP vs SDRA :<br>';
+    h+='OAP: lignes B regulieres espacement constant, glissement preserves, pas de consolidations, ETT: dysfonction VG.<br>';
+    h+='SDRA: lignes B irreguliers, zones epargnees, consolidations posterieures, LUS score >17, bilateral asymetrique possible.</div>';
+  }
+
+  if(epd||epg){
+    h+='<div class="rb">';
+    if(epd){ var vd=Math.round(epd*epd*90); h+='<div class="rr"><span class="rl">Epanchement D</span><span><span class="'+(epd<1?'ok':epd<3?'wa':'da')+'">'+epd+' cm</span> ~ '+vd+' mL — '+(epd<1?'Minime, non hemodynamiquement significatif':epd<3?'Modere: ponction si doute diagnostique ou symptomatique':'Important >3cm: drainage si detresse, sinon ponction evacuatrice')+'</span></div>'; }
+    if(epg){ var vg2=Math.round(epg*epg*90); h+='<div class="rr"><span class="rl">Epanchement G</span><span><span class="'+(epg<1?'ok':epg<3?'wa':'da')+'">'+epg+' cm</span> ~ '+vg2+' mL</span></div>'; }
+    h+='</div>';
+    h+='<div class="ibox">Caractere de l&#39;epanchement: anechoique=transsudat probable; echogenique/cloisonne=exsudat/hemothorax/chylothorax. Ponction echo-guidee si incertitude diagnostique ou drainage necessaire.</div>';
+  }
+  SET('res-pulm', h||'<div class="ibox">Saisir les resultats pour obtenir une interpretation.</div>');
+}
+
+function CLUS() {
+  var ids=['d1','d2','d3','d4','d5','d6','g1','g2','g3','g4','g5','g6'];
+  var total=0, filled=0, scoreD=0, scoreG=0;
+  for(var i=0;i<ids.length;i++){
+    var e=GE('l-'+ids[i]);
+    if(e&&e.value!==''){var v=parseInt(e.value);if(!isNaN(v)){total+=v;filled++;if(i<6)scoreD+=v;else scoreG+=v;}}
+  }
+  if(filled===0){SET('res-lus','');return;}
+  var cls=total<=5?'ok':total<=17?'wa':'da';
+  var h='<div class="sg3"><div class="sbox"><div class="sv" style="color:'+(cls==='ok'?'var(--gr)':cls==='wa'?'var(--am)':'var(--rd)')+'">'+total+'/36</div><div class="sl">LUS Score</div></div>';
+  h+='<div class="sbox"><div class="sv" style="color:var(--bl)">'+scoreD+'</div><div class="sl">Score droit</div></div>';
+  h+='<div class="sbox"><div class="sv" style="color:var(--bl)">'+scoreG+'</div><div class="sl">Score gauche</div></div></div>';
+  h+='<div class="ic '+cls+'"><div class="ic-t">LUS Score = '+total+'/36</div>';
+  if(total===0) h+='Aeration pulmonaire normale.';
+  else if(total<=5) h+='Syndrome interstitiel leger. Surveiller evolution.';
+  else if(total<=17) h+='Syndrome interstitiel modere. SDRA leger-modere possible. Optimiser PEEP. Prone position si P/F<150.';
+  else h+='LUS >17 — SDRA severe probable. Correlation forte avec mortalite. Guider PEEP (titration echo-guidee), prone position, curarisation.';
+  if(Math.abs(scoreD-scoreG)>=5) h+='<br>Asymetrie D/G ('+scoreD+' vs '+scoreG+') — Pathologie unilaterale: pneumonie, atelectasie, contusion, epanchement. Reorienter drainage et PEEP.';
+  h+='</div>';
+  h+='<div class="ibox">Utilisation clinique:<br>';
+  h+='- Guide sevrage ventilatoire: LUS ameliore sous PEEP = recrutement reussi<br>';
+  h+='- Prediction oedeme post-extubation: LUS >12 = risque eleve<br>';
+  h+='- Suivi reponse aux diuretiques: reduction LUS = efficacite de la dereanimation</div>';
+  SET('res-lus',h);
+}
+
+function CABDO() {
+  var ll=VS('a-ll'),loc=VS('a-loc');
+  var vm=VN('a-vmax'),vmin=VN('a-vmin'),vent=VS('a-vent');
+  var ao=VN('a-ao'),aom=VS('a-aom'),vb=VS('a-vb');
+  var h='';
+
+  // Tableau valeurs normales VCI
+  h+='<div class="rb" style="margin-bottom:10px">';
+  h+='<div class="rr"><span class="rl">VCI normale (adulte)</span><span><span class="ok">15-25 mm</span></span></div>';
+  h+='<div class="rr"><span class="rl">Index collapsibilite (VS)</span><span><span class="ok">&lt;50% = normovolemie</span></span></div>';
+  h+='<div class="rr"><span class="rl">Index distensibilite (VM)</span><span><span class="ok">&gt;18% = repondeur</span></span></div>';
+  h+='<div class="rr"><span class="rl">Aorte abdominale</span><span><span class="ok">&lt;30 mm</span> <span class="wa">30-50 AAA modere</span> <span class="da">&gt;50 chirurgie urgente</span></span></div>';
+  h+='</div>';
+
+  if(ll!=='N'){
+    var lcc=ll==='abd'?'dbox':'wbox';
+    var lct={min:'Minime (1 loge)',mod:'Modere (2-3 loges)',abd:'Abondant - HEMOPERITOINE PROBABLE'}[ll]||'';
+    var locT={na:'',mor:'Morrisson (QSD - loge hepato-renale)',kol:'Koller (QSG - loge spleno-renale)',dou:'Douglas (pelvis)',mul:'Multiples loges'}[loc]||'';
+    h+='<div class="'+lcc+'">'+lct+(locT?' - '+locT:'')+'<br>';
+    if(ll==='abd')h+='Hemoperitoine massif probable. Chirurgie urgente ou embolisation. NE PAS attendre scanner si instabilite hemodynamique.';
+    else if(ll==='mod')h+='Epanchement modere. Cause : trauma (hemoperitoine), ascite (cirrhose, peritonite), hemoragie intraperitoneale. Ponction exploratrice.';
+    else h+='Epanchement minime. Surveiller. Peut etre physiologique (ovulation, peritonite debutante).';
+    h+='</div>';
+  }
+
+  if(vm){
+    h+='<div class="rb">';
+    var vi2='';
+    var vci_cls='in';
+    if(vent==='spont'){
+      if(vm<15){vi2='VCI effondree (<15mm) - Hypovolemie severe. Remplissage rapide.';vci_cls='da';}
+      else if(vm>21&&!vmin){vi2='VCI dilatee (>21mm) - Surcharge volumique ou insuffisance cardiaque droite. Eviter remplissage.';vci_cls='wa';}
+      else if(vmin){
+        var ci=Math.round((vm-vmin)/vm*100);
+        vci_cls=ci>50?'da':ci>30?'wa':'ok';
+        vi2='Index de collapsibilite : '+ci+'%<br>'+(ci>50?'Hypovolemie probable (>50%) - Repondeur au remplissage. Epreuve de remplissage 250-500mL cristalloides.':ci>30?'Zone grise (30-50%) - Tester avec PLR (delta ITV sous-aortique >10% = repondeur).':'Normovolemie (<30%) - Pas de remplissage. Chercher autre cause de bas debit.');
+      }
+    } else {
+      if(vmin){
+        var di=Math.round((vm-vmin)/vm*100);
+        vci_cls=di>18?'da':'ok';
+        vi2='Index de distensibilite (VM) : '+di+'%<br>'+(di>18?'Repondeur probable au remplissage (>18%). Epreuve de remplissage 250mL.':'Non-repondeur (<18%). Pas de remplissage. Evaluer contractilite et postcharge.');
+      }else vi2='Saisir VCI min pour calculer index de distensibilite.';
+    }
+    h+='<div class="rr"><span class="rl">VCI max</span><span>'+(vm<15?'<span class="da">':'<span class="'+(vm>21?'wa':'ok')+'">')+vm+' mm</span></span></div>';
+    if(vmin)h+='<div class="rr"><span class="rl">VCI min</span><span>'+vmin+' mm</span></div>';
+    h+='<div class="rr" style="flex-direction:column;align-items:flex-start;gap:4px"><span class="rl">Interpretation</span><span style="font-size:11px;color:var(--t2);line-height:1.6">'+vi2+'</span></div>';
+    h+='</div>';
+    if(vent==='vm')h+='<div class="ibox">En VM : utiliser index de distensibilite. Prerequis : rythme sinusal, Vt >8mL/kg, absence effort spontane, pas de FA. Sinon : PLR ou mini-epreuve de remplissage 100mL en 1min + delta ITV.</div>';
+  }
+
+  if(ao){
+    if(ao>=50)h+='<div class="dbox">AAA >= 50mm - URGENCE CHIRURGICALE ou EVAR. Risque rupture imminent. Chirurgie vasculaire urgente. Angioscanner si stable.</div>';
+    else if(ao>=40)h+='<div class="wbox">AAA modere ('+ao+'mm) - Avis chirurgie vasculaire. Surveillance echographique tous les 6 mois. Cible PA systolique <140mmHg. Arret tabac, statines.</div>';
+    else if(ao>=30)h+='<div class="ibox">Aorte elargie ('+ao+'mm) - Controle echographique a 1 an. Surveillance facteurs de risque cardiovasculaires.</div>';
+    if(aom==='dis')h+='<div class="dbox">DISSECTION AORTIQUE suspectee - Angioscanner thoraco-abdomino-pelvien urgent. Controler PA (objectif systolique 100-120mmHg). Avis chirurgie vasculaire IMMEDIAT.</div>';
+  }
+
+  if(vb==='chol')h+='<div class="wbox">Cholecystite aigue - Triade echographique : lithiase enclavee + epaississement paroi (>3mm) + Murphy echographique. Murphy echo = signe le plus specifique. Chirurgie (cholecystectomie) ou drainage percutane si operabilite nulle. ATB + antalgiques.</div>';
+  else if(vb==='dvb')h+='<div class="wbox">Dilatation voie biliaire principale (>8mm) - Obstacle : lithiase VBP, tumeur (cholangiocarcinome, ampullome), compression extrinsèque. CPRE ou drainage percutane. Scanner + bili-IRM completent le bilan.</div>';
+  else if(vb==='lith')h+='<div class="ibox">Lithiase vesiculaire - Echos hyperechogenes avec cone d&#39;ombre. Rechercher signe de complication : dilatation VBP, paroi epaissie, liquide pericholecystique.</div>';
+
+  SET('res-abdo',h||'<div class="ibox">Saisir les resultats pour obtenir une interpretation.</div>');
+}
+
+function CVEXUS() {
+  var vci=VN('vx-vci');
+  var vh=parseInt(VS('vx-vh'));
+  var vp=parseInt(VS('vx-vp'));
+  var vr=parseInt(VS('vx-vr'));
+  var grade=0;
+  if(vci&&vci>=20){
+    var nb2=(vh===2?1:0)+(vp===2?1:0)+(vr===2?1:0);
+    var nb1=(vh>=1?1:0)+(vp>=1?1:0)+(vr>=1?1:0);
+    if(nb2>=2)grade=3;
+    else if(nb2===1)grade=2;
+    else if(nb1>=1)grade=1;
+    else grade=1;
+  }
+  var colors=['var(--gr)','var(--bl)','var(--am)','var(--rd)'];
+  var labels=['Grade 0 - Pas de congestion veineuse','Grade 1 - Congestion legere','Grade 2 - Congestion moderee','Grade 3 - Congestion severe'];
+  var h='<div class="sg2"><div class="sbox"><div class="sv" style="color:'+colors[grade]+'">Grade '+grade+'</div><div class="sl">VExUS Score</div></div></div>';
+  h+='<div class="ic '+(grade<=1?'ok':grade===2?'wa':'da')+'"><div class="ic-t">'+labels[grade]+'</div>';
+
+  if(!vci||vci<20){
+    h+='VCI &lt; 20mm : VExUS grade 0 par definition (pas de congestion quelle que soit anomalie des flux).';
+  } else {
+    var conseils_detail=[
+      '',
+      'Surveiller. Pas de dereanimation urgente. Rester vigilant sur les apports.',
+      'Restriction hydrique progressive. Envisager furosemide 20-40mg IV. Reevaluer dans 4-6h.',
+      'DEREANIMATION URGENTE - Furosemide IVSE (240-500mg/24h) + restriction hydrique stricte. Objectif : perte de poids 0.5-1 kg/j. Reevaluer VExUS toutes les 6h. Correlation avec diurese et balance hydrique.'
+    ];
+    h+=conseils_detail[grade]+'<br><br>';
+    h+='<b>Detail des flux :</b><br>';
+    h+='Veine hepatique : '+(['Normal (S>D prédominant)','Modere (S attenue, S<D)','Severe (flux S inverse)'])[vh]+'<br>';
+    h+='Veine porte : '+(['Normal (continu monophasique)','Modere (pulsatile <30%)','Severe (pulsatile >=30%)'])[vp]+'<br>';
+    h+='Veine renale : '+(['Normal (continu)','Modere (biphasique)','Severe (discontinu)'])[vr]+'<br><br>';
+    h+='<i style="font-size:11px">VExUS predit surcharge hemodynamique avec Spe >90% pour grade 3. Correle avec complications renales et mortalite en reanimation (Beaubien-Souligny 2020).</i>';
+  }
+  h+='</div>';
+  SET('res-vexus',h);
+}
+
+function CVASC() {
+  var vd=VS('tv-d'),vg=VS('tv-g'),loc=VS('tv-l'),dop=VS('tv-dop');
+  var h='';
+
+  h+='<div class="rb" style="margin-bottom:10px">';
+  h+='<div class="rr"><span class="rl">Compression totale</span><span><span class="ok">Normal - pas de TVP</span></span></div>';
+  h+='<div class="rr"><span class="rl">Non-compressible</span><span><span class="da">TVP confirmee</span></span></div>';
+  h+='<div class="rr"><span class="rl">Sensibilite compression 2pts</span><span>~92% TVP proximales</span></div>';
+  h+='<div class="rr"><span class="rl">Specificite</span><span>~97% (peu de faux positifs)</span></div>';
+  h+='</div>';
+
+  var tvpD=vd!=='ok',tvpG=vg!=='ok';
+  if(tvpD||tvpG){
+    h+='<div class="'+(vd==='nc'||vg==='nc'?'dbox':'wbox')+'">';
+    if(vd==='nc')h+='TVP CONFIRMEE DROITE (non compressible). ';
+    else if(tvpD)h+='TVP probable droite (compressibilite partielle). ';
+    if(vg==='nc')h+='TVP CONFIRMEE GAUCHE. ';
+    else if(tvpG)h+='TVP probable gauche. ';
+    h+=(loc==='prox'?'TVP PROXIMALE - Risque EP eleve (30-50% sans traitement). Anticoagulation curative URGENTE.':'TVP distale - Anticoagulation ou surveillance selon risque EP.')+'<br><br>';
+    h+='<b>Anticoagulation :</b> HBPM 1mg/kg/12h (enoxaparine) ou HNF 500UI/kg/j IVSE si IRA severe ou EER. Relais AVK ou NACO a 3 mois (6 mois si cancer, indefini si recidive).<br>';
+    h+='<b>Bilan :</b> ETT (signes de coeur pulmonaire aigu : dilatation VD, TAPSE abaisse), D-dimeres. Angioscan si TVP proximale + dyspnee (EP probable).<br>';
+    h+='<b>Traitement EP massive :</b> thrombolyse (alteplase 100mg en 2h) si choc ou arret cardiaque. Heparinotherapie si EP sous-massive.';
+    h+='</div>';
+  } else if(dop==='A'){
+    h+='<div class="dbox">Absence signal Doppler couleur - Occlusion vasculaire complete. Avis vasculaire URGENT. Differencier thrombose arterielle (froid + palleur + douleur + abolition pouls) vs veineuse (oedeme + rougeur + chaleur).</div>';
+  } else {
+    h+='<div class="gbox">Pas de signe echographique de TVP aux zones explorees - Veines compressibles, signal Doppler present.</div>';
+    h+='<div class="ibox">Limites methode : sensibilite TVP distales ~70% (jambiere). Si forte suspicion clinique (score de Wells >= 2) avec echo normale : D-dimeres + angioscan ou echo complete des 3 segments.</div>';
+  }
+  SET('res-vasc',h);
+}
+
+function CRENAL() {
+  var ld=VN('r-ld'),lg=VN('r-lg'),cd=VN('r-cd'),cg=VN('r-cg');
+  var hd=VS('r-hd'),hg=VS('r-hg'),rid=VN('r-rid'),rig=VN('r-rig');
+  var vol=VN('r-vol'),eco=VS('r-eco');
+  var h='';
+
+  h+='<div class="rb" style="margin-bottom:10px">';
+  h+='<div class="rr"><span class="rl">Longueur rein</span><span><span class="ok">90-120 mm</span> (atrophie si &lt;80mm)</span></div>';
+  h+='<div class="rr"><span class="rl">Epaisseur corticale</span><span><span class="ok">>=7 mm</span> (chronique si &lt;7mm)</span></div>';
+  h+='<div class="rr"><span class="rl">RI Doppler</span><span><span class="ok">&lt;0.70 normal</span> <span class="wa">0.70-0.80 limite</span> <span class="da">>=0.80 NTA/vasospasme</span></span></div>';
+  h+='<div class="rr"><span class="rl">Volume vesical</span><span>Globe si &gt;400 mL, retention probable si &gt;300 mL</span></div>';
+  h+='</div>';
+
+  h+='<div class="rb">';
+  if(ld){
+    var ld_cls=ld>=90&&ld<=120?'ok':ld<80?'da':'wa';
+    h+='<div class="rr"><span class="rl">Longueur rein D</span><span><span class="'+ld_cls+'">'+ld+' mm</span> '+(ld<80?'- Atrophie renale severe (NPC, nephropathie vasculaire)':ld<90?'- Limite inferieure':'')+'</span></div>';
+  }
+  if(lg){
+    var lg_cls=lg>=90&&lg<=120?'ok':lg<80?'da':'wa';
+    h+='<div class="rr"><span class="rl">Longueur rein G</span><span><span class="'+lg_cls+'">'+lg+' mm</span></span></div>';
+  }
+  if(cd){
+    h+='<div class="rr"><span class="rl">Corticale D</span><span><span class="'+(cd>=7?'ok':cd>=5?'wa':'da')+'">'+cd+' mm</span> '+(cd<5?'- Atrophie corticale severe':cd<7?'- Amincie (NPC debutante)':'- Normale (N>=7mm)')+'</span></div>';
+  }
+  if(rid){
+    h+='<div class="rr"><span class="rl">RI Doppler D</span><span><span class="'+(rid<0.70?'ok':rid<0.80?'wa':'da')+'">'+rid+'</span> '+(rid>=0.80?'- Eleve : NTA, vasospasme (hypovolemie/choc), nefrotoxiques. Mauvais pronostic renal.':rid>=0.70?'- Limite : surveiller':' - Normal (&lt;0.70)')+'</span></div>';
+  }
+  if(rig){
+    h+='<div class="rr"><span class="rl">RI Doppler G</span><span><span class="'+(rig<0.70?'ok':rig<0.80?'wa':'da')+'">'+rig+'</span></span></div>';
+  }
+  if(vol){
+    h+='<div class="rr"><span class="rl">Volume vesical</span><span><span class="'+(vol>400?'da':vol>300?'wa':'ok')+'">'+vol+' mL</span> '+(vol>400?'- GLOBE VESICAL. Sondage urgent. Risque retention aigue (douleur, insuffisance renale post-renale).':vol>300?'- Retention probable. Sondage a discuter.':' - Normal.')+'</span></div>';
+  }
+  h+='</div>';
+
+  if(hd!=='N'||hg!=='N'){
+    h+='<div class="wbox">Hydronephrose '+(hd!=='N'&&hg!=='N'?'bilaterale (penser obstacle sous-vesical : adénome, sténose urétrale)':hd!=='N'?'droite':'gauche')+'<br>';
+    var grades={N:'Absente','1':'Grade 1 - Pyelectasie legere (dilatation pyelos <15mm)','2':'Grade 2 - Dilatation calicielle visible','3':'Grade 3 - Corticale amincie (obstruction chronique)'};
+    if(hd!=='N')h+='D : '+grades[hd]+'<br>';
+    if(hg!=='N')h+='G : '+grades[hg]+'<br>';
+    h+='Bilan : echographie + TDM uroscanner. Drainage urgent (nephrostomie percutanee ou sonde double J) si fievre (pyonephrose), anurie ou douleur refractaire.</div>';
+  }
+
+  if((rid&&rid>=0.80)||(rig&&rig>=0.80)){
+    h+='<div class="dbox">RI >= 0.80 - Resistance vasculaire intrarenale elevee. Causes principales en rea : NTA (choc, nefrotoxiques), vasospasme (hypovolemie residuelle), GNRP. RI >= 0.80 predit non-recuperation de fonction renale dans 80% des cas a court terme. Traitement causal. Eviter nephrotoxiques (AINS, aminosides, PCI).</div>';
+  }
+
+  if(eco==='aug')h+='<div class="wbox">Hyperechogenicite corticale - Nephropathie chronique (GNC, NAS vasculaire, polykystose). Corticale plus echogene que le foie/rate = signe de fibrose. Confirmer par biologie (creatinine, proteinurie) et bilan immunologique.</div>';
+  else if(eco==='dim')h+='<div class="wbox">Hypoechogenicite corticale - IRA parenchymateuse (NTA aigue, nephrite interstitielle aigue). Corticale sombre avec medullaires bien visibles = oedeme interstitiel aigu. Favorable si cause reversible traitee.</div>';
+
+  SET('res-renal',h||'<div class="ibox">Saisir les mesures pour obtenir une interpretation.</div>');
+}
+
+function CONSD() {
+  var d=VN('o-d'),g=VN('o-g');
+  if(!d&&!g){SET('res-onsd','');return;}
+  var moy=d&&g?Math.round((d+g)/2*10)/10:d||g;
+  var asy=d&&g?Math.abs(Math.round((d-g)*10)/10):0;
+  var em=GE('o-moy');if(em)em.value=moy;
+  var ea=GE('o-asy');if(ea)ea.value=asy;
+  var cls=moy>=5.7?'da':moy>=5.0?'wa':'ok';
+  var h='';
+
+  h+='<div class="rb" style="margin-bottom:8px">';
+  h+='<div class="rr"><span class="rl">ONSD normal</span><span><span class="ok">&lt;5.0 mm</span></span></div>';
+  h+='<div class="rr"><span class="rl">Zone grise</span><span><span class="wa">5.0-5.7 mm</span></span></div>';
+  h+='<div class="rr"><span class="rl">HTIC probable</span><span><span class="da">>=5.7 mm (PIC >20 mmHg)</span></span></div>';
+  h+='<div class="rr"><span class="rl">Sensibilite/Specificite</span><span>Se ~90% / Spe ~85% pour PIC>20mmHg</span></div>';
+  h+='</div>';
+
+  h+='<div class="ic '+cls+'"><div class="ic-t">ONSD moyen : '+moy+' mm</div>';
+  if(moy>=5.7){
+    h+='HTIC PROBABLE (PIC > 20 mmHg).<br><br>';
+    h+='<b>Traitement anti-HTIC urgent :</b><br>';
+    h+='1. Position : tete 30 deg, axe tete-cou-tronc neutre<br>';
+    h+='2. Osmotherapie : Mannitol 20% 0.5-1g/kg en 20min OU SSH 3% 150-250mL en 30min<br>';
+    h+='3. Hyperventilation moderee (PaCO2 35-40 mmHg) - seulement si engagement imminent<br>';
+    h+='4. Sedation-analgesia adequate (eviter hypercapnie, PEEP elevee, agitation)<br>';
+    h+='5. Neurochirurgie : craniectomie decompressive si refractaire<br>';
+    h+='<b>Ne pas baisser la PA !</b> PAM cible >= 80 mmHg pour maintenir perfusion cerebrale.';
+  } else if(moy>=5.0){
+    h+='Zone grise (5.0-5.7 mm). HTIC possible.<br>Croiser avec clinique : anisocorie, mydriase, reflexe de Cushing (HTA + bradycardie). Repeter la mesure. Envisager monitoring PIC si doute.';
+  } else {
+    h+='ONSD normal. HTIC peu probable. Continuer surveillance clinique.';
+  }
+  if(asy>=0.5)h+='<br><br>Asymetrie ONSD '+asy+'mm - Processus expansif unilateral probable (hematome, tumeur). IRM/TDM cerebral urgent.';
+  h+='</div>';
+  SET('res-onsd',h);
+}
+
+function CDTC() {
+  var vsd=VN('d-vsd'),vdd=VN('d-vdd'),vmd=VN('d-vmd');
+  var vsg=VN('d-vsg'),vdg=VN('d-vdg'),vmg=VN('d-vmg');
+  var mid=VN('d-mid')||0;
+  var h='';
+
+  h+='<div class="rb" style="margin-bottom:8px">';
+  h+='<div class="rr"><span class="rl">Vm ACM normale</span><span><span class="ok">50-100 cm/s</span></span></div>';
+  h+='<div class="rr"><span class="rl">IP normal</span><span><span class="ok">0.6-1.1</span></span></div>';
+  h+='<div class="rr"><span class="rl">IP HTIC</span><span><span class="da">&gt;1.4</span></span></div>';
+  h+='<div class="rr"><span class="rl">Vasospasme (post-HSA)</span><span><span class="da">Vm &gt;120 cm/s</span> severe si &gt;200 cm/s</span></div>';
+  h+='<div class="rr"><span class="rl">Midline shift pathologique</span><span><span class="da">&gt;5 mm</span></span></div>';
+  h+='</div>';
+
+  h+='<div class="rb">';
+  if(vsd&&vdd){
+    var vm2=vmd||Math.round((vsd+2*vdd)/3);
+    var ipD=Math.round((vsd-vdd)/vm2*100)/100;
+    var ipD_cls=ipD<=1.1?'ok':ipD<=1.4?'wa':'da';
+    h+='<div class="rr"><span class="rl">IP ACM droite</span><span><span class="'+ipD_cls+'">'+ipD+'</span> '+(ipD>1.4?'- HTIC possible':ipD>1.1?'- Limite':'- Normal')+'</span></div>';
+    h+='<div class="rr"><span class="rl">Vm ACM droite</span><span><span class="'+(vm2>=50&&vm2<=100?'ok':vm2<30?'da':'wa')+'">'+vm2+' cm/s</span> '+(vm2>120?'- VASOSPASME':vm2<30?'- Tres basse':'')+'</span></div>';
+    h+='<div class="rr"><span class="rl">Vs/Vd ACM droite</span><span>'+vsd+'/'+vdd+' cm/s</span></div>';
+  }
+  if(vsg&&vdg){
+    var vm3=vmg||Math.round((vsg+2*vdg)/3);
+    var ipG=Math.round((vsg-vdg)/vm3*100)/100;
+    h+='<div class="rr"><span class="rl">IP ACM gauche</span><span><span class="'+(ipG<=1.1?'ok':ipG<=1.4?'wa':'da')+'">'+ipG+'</span></span></div>';
+    h+='<div class="rr"><span class="rl">Vm ACM gauche</span><span>'+vm3+' cm/s</span></div>';
+    // Asymetrie inter-hemisphérique
+    if(vmd&&vmg){
+      var asym=Math.abs(vmd-vmg);
+      if(asym>30)h+='<div class="rr"><span class="rl">Asymetrie Vm</span><span><span class="wa">'+asym+' cm/s - Asymetrie significative (stenose focale ?)</span></span></div>';
+    }
+  }
+  if(mid>0)h+='<div class="rr"><span class="rl">Midline shift</span><span><span class="'+(mid>5?'da':mid>3?'wa':'ok')+'">'+mid+' mm</span> '+(mid>5?'- ENGAGEMENT CEREBRAL probable. Neurochirurgie urgente.':mid>3?'- Significatif, surveiller':'')+'</span></div>';
+  h+='</div>';
+
+  // Interpretations cliniques
+  if(vsd&&vsd<30){
+    h+='<div class="dbox">Vm tres basse (&lt;30 cm/s) avec IP eleve - Arret circulatoire cerebral possible. Absence de flux en diastole (flux nul ou retrograde) = mort encephalique probable. Correlate : EEG iso-electrique, absence reflexes tronc, test a l&#39;atropine. 2 DTC a 30min d&#39;intervalle requis pour critere de mort encephalique.</div>';
+  }
+  if(vmd&&vmd>120){
+    h+='<div class="wbox">Hypervitesse ACM (Vm>120 cm/s) - Vasospasme cerebral (post-HSA++). Calcul index de Lindegaard : Vm ACM / Vm ACI (vasospasme si >3). Traitement : nimopidine orale, euvolemie, avis neurochirurgical (angioplastie si refractaire).</div>';
+  }
+  if(vmd&&vmd>200){
+    h+='<div class="dbox">Vasospasme severe (Vm>200 cm/s) - Risque ischemic cerebral majeur. Angioplastie cerebrale transluminale en urgence a discuter.</div>';
+  }
+
+  SET('res-dtc',h||'<div class="ibox">Saisir les velocites pour obtenir une interpretation.</div>');
+}
+
+function CDIAPH() {
+  var teeD=VN('di-tee-d'),teiD=VN('di-tei-d');
+  var teeG=VN('di-tee-g'),teiG=VN('di-tei-g');
+  var excD=VN('di-exc-d'),excG=VN('di-exc-g');
+  var paradox=VS('di-paradox'),vent=VS('di-vent');
+  var h='';
+
+  h+='<div class="rb" style="margin-bottom:8px">';
+  h+='<div class="rr"><span class="rl">Epaisseur Tee (expiration)</span><span><span class="ok">2-5 mm</span></span></div>';
+  h+='<div class="rr"><span class="rl">Thickening Fraction (TF)</span><span><span class="ok">>=30% normal</span> <span class="wa">20-30% limite</span> <span class="da">&lt;20% VIDD</span></span></div>';
+  h+='<div class="rr"><span class="rl">Excursion calme</span><span><span class="ok">&gt;10 mm</span></span></div>';
+  h+='<div class="rr"><span class="rl">Excursion profonde</span><span><span class="ok">&gt;25 mm</span></span></div>';
+  h+='</div>';
+
+  var tfD=null,tfG=null;
+  if(teeD&&teiD&&teeD>0){
+    tfD=Math.round((teiD-teeD)/teeD*100);
+    var etfd=GE('di-tf-d');if(etfd)etfd.value=tfD;
+  }
+  if(teeG&&teiG&&teeG>0){
+    tfG=Math.round((teiG-teeG)/teeG*100);
+    var etfg=GE('di-tf-g');if(etfg)etfg.value=tfG;
+  }
+
+  if(tfD!==null||tfG!==null){
+    var tf=tfD!==null?tfD:tfG;
+    var cls=tf>=30?'ok':tf>=20?'wa':'da';
+    h+='<div class="sg2">';
+    if(tfD!==null)h+='<div class="sbox"><div class="sv" style="color:'+(tfD>=30?'var(--gr)':tfD>=20?'var(--am)':'var(--rd)')+'">'+tfD+'%</div><div class="sl">TF droit</div></div>';
+    if(tfG!==null)h+='<div class="sbox"><div class="sv" style="color:'+(tfG>=30?'var(--gr)':tfG>=20?'var(--am)':'var(--rd)')+'">'+tfG+'%</div><div class="sl">TF gauche</div></div>';
+    h+='</div>';
+    h+='<div class="ic '+cls+'"><div class="ic-t">Thickening Fraction = '+tf+'%</div>';
+    if(tf>=30){
+      h+='Effort diaphragmatique NORMAL (TF >= 30%).<br>';
+      if(vent==='vsai')h+='Critere favorable pour le sevrage. Completer avec RSBI et epreuve de ventilation spontanee.';
+      else if(vent==='vm')h+='Diaphragme fonctionnel malgre la ventilation mecanique. Privilegier modes qui preservent l&#39;effort spontane (VS-AI plutot que VAC).';
+    } else if(tf>=20){
+      h+='TF limite (20-30%) - Dysfonction diaphragmatique debutante.<br>';
+      h+='Possible VIDD (Ventilator-Induced Diaphragm Dysfunction). Reduire le support ventilatoire prudemment. Privilegier VS-AI avec aide basse (7-10 cmH2O). Reevaluer a 24-48h.';
+    } else {
+      h+='DYSFONCTION DIAPHRAGMATIQUE SEVERE (TF < 20%) - VIDD probable.<br>';
+      h+='TF < 20% predit echec de sevrage dans ~70% des cas.<br>';
+      h+='Causes : VIDD (VM prolongee), myopathie de reanimation, malnutrition, electrolytes (hypophos, hypomag), phrenicotraumatisme. Traitement : reduire support ventilatoire prudemment, physiotherapie respiratoire, corriger malnutrition et troubles electrolytiques.';
+    }
+    h+='</div>';
+
+    // Comparaison D/G
+    if(tfD!==null&&tfG!==null&&Math.abs(tfD-tfG)>15){
+      h+='<div class="wbox">Asymetrie TF (D='+tfD+'% vs G='+tfG+'%) - Paralysie/paresis unilaterale probable. Chercher : lesion phrenique post-chirurgie cardiaque, traumatisme, neuropathie (zona, Parsonage-Turner).</div>';
+    }
+  }
+
+  if(excD||excG){
+    h+='<div class="rb">';
+    if(excD){
+      var exc_cls_d=excD>=10?'ok':excD>=7?'wa':'da';
+      h+='<div class="rr"><span class="rl">Excursion droite</span><span><span class="'+exc_cls_d+'">'+excD+' mm</span> '+(excD<7?'- Paralysie/dysfonction severe (N>10mm calme)':excD<10?'- Diminuee (N>10mm)':'- Normale')+'</span></div>';
+    }
+    if(excG){
+      var exc_cls_g=excG>=10?'ok':excG>=7?'wa':'da';
+      h+='<div class="rr"><span class="rl">Excursion gauche</span><span><span class="'+exc_cls_g+'">'+excG+' mm</span></span></div>';
+    }
+    h+='</div>';
+  }
+
+  if(paradox!=='non'){
+    var side={d:'droit',g:'gauche',bil:'bilateral'}[paradox]||paradox;
+    h+='<div class="dbox">Mouvement paradoxal '+side+' - Paralysie diaphragmatique. A l&#39;inspiration : le diaphragme remonte au lieu de descendre. Chercher : lesion du nerf phrenique (post-chirurgie cardiaque, traumatisme cou, invasion tumorale), atteinte neuromusculaire centrale. Sniff test confirmatoire. Eventuelle plication chirurgicale si severe et chronique.</div>';
+  }
+
+  if(teeD&&(teeD<2||teeD>5)){
+    if(teeD<2)h+='<div class="wbox">Diaphragme atrophique (Tee='+teeD+'mm < 2mm) - Denervation chronique ou myopathie de reanimation severe. Pronostic de recuperation reserve.</div>';
+    else h+='<div class="ibox">Epaisseur diaphragme elevee (Tee='+teeD+'mm > 5mm) - Evaluer myopathie inflammatoire, sarcoidose.</div>';
+  }
+
+  SET('res-diaph',h||'<div class="ibox">Saisir les mesures pour obtenir une interpretation.</div>');
+}
+
+function CGAST() {
+  var d1=VN('ga-d1'),d2=VN('ga-d2'),age=VN('ga-age'),poids=VN('ga-poids');
+  var contenu=VS('ga-contenu'),perist=VS('ga-perist'),ctx=VS('ga-ctx');
+  var h='';
+
+  h+='<div class="rb" style="margin-bottom:8px">';
+  h+='<div class="rr"><span class="rl">Seuil estomac vide</span><span><span class="ok">&lt;1.5 mL/kg</span></span></div>';
+  h+='<div class="rr"><span class="rl">Risque modere</span><span><span class="wa">1.5-3 mL/kg</span></span></div>';
+  h+='<div class="rr"><span class="rl">Estomac plein (ISR)</span><span><span class="da">&gt;3 mL/kg</span></span></div>';
+  h+='<div class="rr"><span class="rl">CSA antrum vide</span><span>&lt;3.5 cm2 en DD OU &lt;10 cm2 en DLD</span></div>';
+  h+='</div>';
+
+  if(d1&&d2){
+    var csa=Math.round(Math.PI*(d1/2)*(d2/2)*10)/10;
+    var ecsa=GE('ga-csa');if(ecsa)ecsa.value=csa;
+    if(age){
+      var vol=Math.round(27+14.6*csa-1.28*age);
+      var evol=GE('ga-vol');if(evol)evol.value=vol;
+      if(poids&&vol!==null){
+        var volkg=Math.round(vol/poids*10)/10;
+        var evk=GE('ga-volkg');if(evk)evk.value=volkg;
+        var cls=volkg<1.5?'ok':volkg<3?'wa':'da';
+        h+='<div class="sg3"><div class="sbox"><div class="sv" style="color:var(--te)">'+csa+'</div><div class="sl">CSA antrum (cm2)</div></div>';
+        h+='<div class="sbox"><div class="sv" style="color:var(--bl)">'+vol+'</div><div class="sl">Volume gastrique (mL)</div></div>';
+        h+='<div class="sbox"><div class="sv" style="color:'+(cls==='ok'?'var(--gr)':cls==='wa'?'var(--am)':'var(--rd)')+'">'+volkg+'</div><div class="sl">mL/kg (seuil 1.5/3)</div></div></div>';
+
+        h+='<div class="ic '+cls+'"><div class="ic-t">';
+        if(volkg<1.5)h+='Estomac vide - Risque inhalation FAIBLE</div>';
+        else if(volkg<3)h+='Volume modere - Risque INTERMEDIAIRE</div>';
+        else h+='ESTOMAC PLEIN - Risque inhalation ELEVE</div>';
+
+        if(volkg>=3){
+          h+='Volume gastrique eleve ('+vol+' mL, '+volkg+' mL/kg) - Estomac plein confirme.<br>';
+          h+='<b>Strategies d&#39;induction :</b><br>';
+          h+='1. <b>ISR (Induction Sequence Rapide)</b> : Ketamine 1-2 mg/kg IV + Succinylcholine 1.5 mg/kg IV ou Rocuronium 1.2 mg/kg IV. Pression cricoide (Sellick) controversee mais utilisee. Pas de ventilation au masque.<br>';
+          h+='2. <b>Intubation eveillée</b> : si intubation difficile prevue + estomac plein. Topicalisation + fibroscopie.<br>';
+          h+='3. Position demi-assise 30-45 deg. Aspiration gastrique preop si possible. Antiacides (omeprazole IV, citrate de sodium).';
+        } else if(volkg>=1.5){
+          h+='Volume intermediaire ('+vol+' mL, '+volkg+' mL/kg). Decider selon contenu (liquide clair = moindre risque), contexte (urgence, difficulte intubation), facteurs de risque (RGO, grossesse, obesity).';
+        } else {
+          h+='Estomac vide - Induction standard possible. Volume <1.5 mL/kg = seuil de securite generalement admis.';
+        }
+        h+='</div>';
+      }
+    } else {
+      // Sans age : interpretation CSA seule
+      var csa_interp=csa<3.5?'ok':csa<10?'wa':'da';
+      h+='<div class="ic '+csa_interp+'"><div class="ic-t">CSA antrum = '+csa+' cm2</div>';
+      if(csa<3.5)h+='CSA &lt;3.5 cm2 en DD = Estomac vide probable.';
+      else if(csa<10)h+='CSA 3.5-10 cm2 = Volume intermediaire. Saisir age et poids pour calcul Perlas.';
+      else h+='CSA >10 cm2 = Estomac plein probable. Saisir age et poids pour quantifier.';
+      h+='</div>';
+    }
+  }
+
+  // Interpretation du contenu
+  var cMsgs={
+    vide:'<div class="gbox">Estomac vide a l&#39;echo - Aspect caracteristique : antrum plat, parois accolees, image en cible sans contenu. Risque inhalation faible.</div>',
+    liq_clair:'<div class="ibox">Liquide clair (eau, salive, preparations buvues) - Aspect anechogene homogene. Risque faible si volume &lt;1.5 mL/kg. Les liquides clairs se videangent rapidement (2h). Appliquer regles du jeun preop.</div>',
+    liq_epais:'<div class="wbox">Liquide epais / opaque (lait, jus, ali liquide) - Aspect granuleux, hypoechogene. Risque modere a eleve selon volume. pH acide potentiellement agressif si inhalation. ISR a considerer.</div>',
+    solide:'<div class="dbox">Contenu solide - Aspect hyperechogene avec artefacts de reverberation. ESTOMAC PLEIN. ISR OBLIGATOIRE. Le jeun de 6h pour les solides n&#39;est pas toujours respecte en urgence. Ne jamais presumer un estomac vide chez un patient inconscient ou traumatise.</div>'
+  };
+  if(contenu&&cMsgs[contenu])h+=cMsgs[contenu];
+
+  // Peristaltisme
+  if(perist==='absent'){
+    h+='<div class="dbox">Ileus gastrique - Peristaltisme absent. Suspendre ou ne pas demarrer la nutrition enterale. Prokinetique : metoclopramide 10mg/8h IV ou erythromycine 200-250mg/8h IV. Verifier causes : morphiniques, hyperglycemie, hypokaliemie, peritonite.</div>';
+  } else if(perist==='diminue'){
+    h+='<div class="wbox">Peristaltisme diminue - Gastroparesie probable. Envisager prokinetique preventif. Verifier glycemie et kaliemie. Nutrition post-pylorique (sonde naso-jejunale) si intolerance persistante.</div>';
+  } else if(perist==='present'){
+    h+='<div class="gbox">Peristaltisme present - Transit gastrique fonctionnel. Nutrition enterale gastrique tolerable.</div>';
+  }
+
+  // Residus gastriques en contexte NE
+  if(ctx==='ne'){
+    h+='<div class="ibox"><b>Evaluation tolerance NE :</b> Mesurer CSA antrum avant et 1h apres bolus. Si CSA augmente significativement ou liquide abondant visible = stase gastrique. Residu gastrique clinique >250-500 mL = suspendre NE + prokinetique. Ne pas mesurer residus systematiquement si patient tolere la NE (ESPEN 2019).</div>';
+  }
+
+  SET('res-gast',h||'<div class="ibox">Saisir les mesures pour obtenir une interpretation.</div>');
+}
+
+window.onload = function() {
+  SP('ett');
+};
+</script>
+</body>
+</html>
